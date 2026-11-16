@@ -400,6 +400,17 @@ html,body{direction:rtl}
 #hero .hero-content{padding-bottom:10vh}
 #openBtn{min-width:58px;min-height:58px;padding:.45em;border-radius:50%;font-size:1.8rem;line-height:1}
 #hero h1{font-family:var(--script);direction:ltr;letter-spacing:.02em}
+
+/* ---------- تنسيق جمل الصور (Polaroid + العرض الكبير) ---------- */
+.polaroid figcaption{
+  font-family:'Noto Sans Arabic','Quicksand',system-ui,sans-serif;font-weight:400;font-size:.92rem;line-height:1.5;
+  color:#b5487f;letter-spacing:0;padding:11px 6px 2px;min-height:1.5em;
+}
+.v-cap{
+  font-family:'Noto Sans Arabic','Quicksand',system-ui,sans-serif;font-weight:400;font-size:clamp(.98rem,2.6vw,1.2rem);
+  line-height:1.5;color:#b5487f;padding:12px 10px 4px;
+}
+@media(max-width:600px){.polaroid figcaption{font-size:.8rem;padding:8px 2px 0}}
 </style>
 </head>
 <body class="locked gift">
@@ -1188,24 +1199,24 @@ $('#tlAdd').addEventListener('click', () => {
    ========================================================================== */
 const PHOTO_FOLDERS = ['photos/', ''];   // بيجرّب فولدر photos الأول، ولو ملقاش الصورة بيجرّب جنب index.html
 const PHOTOS = [
-  ['IMG_0058.jpeg', ''],
-  ['IMG_0059.jpeg', ''],
-  ['IMG_0060.jpeg', ''],
-  ['IMG_0067.jpeg', ''],
-  ['IMG_0068.jpeg', ''],
-  ['IMG_0069.jpeg', ''],
-  ['IMG_0084.jpeg', ''],
-  ['IMG_0087.jpeg', ''],
-  ['IMG_0088.jpeg', ''],
-  ['IMG_0096.jpeg', ''],
-  ['IMG_0097.jpeg', ''],
-  ['IMG_0098.jpeg', ''],
-  ['IMG_0099.jpeg', ''],
-  ['IMG_0104.jpeg', ''],
-  ['IMG_0105.jpeg', ''],
-  ['IMG_0106.jpeg', ''],
-  ['IMG_0108.jpeg', ''],
-  ['IMG_9181.jpeg', '']
+  ['IMG_0058.jpeg', 'أول ما شفتك قلبي عرف طريقه'],
+  ['IMG_0059.jpeg', 'معاكي الوقت بيجري وأنا مبسوط'],
+  ['IMG_0060.jpeg', 'ضحكتك بتصلّحلي يومي كله ❤️'],
+  ['IMG_0067.jpeg', 'جنبك بحس إني في بيتي'],
+  ['IMG_0068.jpeg', 'كل مرة بحبك أكتر من اللي قبلها'],
+  ['IMG_0069.jpeg', 'إنتي أحلى حاجة في أيامي'],
+  ['IMG_0084.jpeg', 'يا رب أفضل شايفك كده دايمًا'],
+  ['IMG_0087.jpeg', 'حتى الصمت معاكي حلو'],
+  ['IMG_0088.jpeg', 'إيدك في إيدي وكل حاجة تهون'],
+  ['IMG_0096.jpeg', 'بحب نفسي أكتر وأنا معاكي ❤️'],
+  ['IMG_0097.jpeg', 'يوم عادي بقى أحلى يوم بيكي'],
+  ['IMG_0098.jpeg', 'عنيكي فيها كل اللي نفسي فيه'],
+  ['IMG_0099.jpeg', 'إنتي الصدفة اللي مكنتش مستنيها'],
+  ['IMG_0104.jpeg', 'معاكي بنسى الدنيا وهمومها'],
+  ['IMG_0105.jpeg', 'كل صورة معاكي ذكرى بتتحب'],
+  ['IMG_0106.jpeg', 'وجودك جنبي طمأنينة'],
+  ['IMG_0108.jpeg', 'لسه بتفرحي قلبي زي أول يوم'],
+  ['IMG_9181.jpeg', 'إنتي اختياري وأحلى قرار ❤️']
 ];
 
 const tiltOf = id => { let h = 0; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0; return (((h % 640) / 100) - 3.2).toFixed(2); };
@@ -1380,6 +1391,7 @@ const Paper = {
 const Music = (() => {
   const audio = new Audio(); audio.loop = true; audio.preload = 'auto';
   const NAME_SYNTH = 'لحن ليلتنا';
+  const SONG_URL = 'song.mp3', SONG_NAME = 'بهاء سلطان - أنا من غيرك';
   let mode = 'synth', playing = false, ctx = null, master = null, out = null, timer = null, nextT = 0, step = 0, fileUrl = null;
   let vol = clamp(state.settings.volume ?? .6, 0, 1);
   const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
@@ -1462,9 +1474,13 @@ const Music = (() => {
         await useFile(f, f.name.replace(/\.[^.]+$/, '')); toast('أغنيتكم جاهزة، دوس تشغيل ♫');
       });
       $('#plReset').addEventListener('click', async () => { await DB.del('files', 'music').catch(() => {}); useSynth(); toast('رجعنا للحن الرومانسي الأصلي'); });
-      audio.addEventListener('error', () => { if (mode === 'file' && audio.src) toast("مش قادر أشغّل الملف الصوتي ده"); });
+      audio.addEventListener('error', () => {
+        if (fileUrl === null && mode === 'file') { useSynth(); return; } // الأغنية الأساسية مش موجودة: ارجع للحن
+        if (mode === 'file' && audio.src) toast("مش قادر أشغّل الملف الصوتي ده");
+      });
       const recs = await DB.all('files').catch(() => []); const m = recs.find(r => r.key === 'music');
       if (m) await useFile(m.blob, (m.name || 'Our song').replace(/\.[^.]+$/, ''));
+      else { audio.src = SONG_URL; mode = 'file'; setName(SONG_NAME); }
     }
   };
 })();
@@ -1632,6 +1648,7 @@ function setupHero() {
   $('#openBtn').addEventListener('click', e => {
     const r = e.currentTarget.getBoundingClientRect();
     FX.burst(r.left + r.width / 2, r.top + r.height / 2, 46, { big: true }); FX.confetti(34);
+    if (!Music.playing) Music.toggle(); // الأغنية بتشتغل أول ما تدوس على القلب
     hero.classList.add('leaving'); document.body.classList.remove('locked'); document.body.classList.add('opened');
     $('#app').classList.add('visible'); $('#app').removeAttribute('aria-hidden'); scrollTo(0, 0);
     setTimeout(() => Reveal.start(), 700);
