@@ -166,13 +166,6 @@ body.opened .dots{opacity:1}
 @media(max-width:760px){.dots{display:none}}
 
 /* ---------- GALLERY ---------- */
-.g-bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:34px}
-.dropzone{
-  --eo-display:block;width:100%;max-width:640px;margin:0 auto 30px;padding:26px 20px;text-align:center;
-  border:2px dashed rgba(255,140,200,.5);border-radius:20px;background:rgba(255,79,163,.06);color:var(--muted);transition:all .3s;
-}
-.dropzone.over{background:rgba(255,79,163,.2);border-color:var(--pink);transform:scale(1.02)}
-.dropzone b{color:var(--ink)}
 .polaroids{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:40px 28px;align-items:start;padding:12px 6px}
 .polaroid{
   position:relative;background:#fff7fb;padding:12px 12px 14px;border-radius:4px;color:#5b2346;cursor:pointer;
@@ -185,7 +178,9 @@ body.opened .dots{opacity:1}
 .polaroid .ph{overflow:hidden;background:#2a1030;aspect-ratio:var(--ar,1)}
 .polaroid img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease)}
 .polaroid:hover img{transform:scale(1.07)}
-.polaroid figcaption{font-family:var(--hand);font-size:1.4rem;line-height:1.2;text-align:center;padding:12px 4px 2px;min-height:2.6em;outline:none;word-break:break-word}
+.polaroid figcaption{font-family:var(--hand);font-size:1.4rem;line-height:1.2;text-align:center;padding:12px 4px 2px;min-height:1.2em;outline:none;word-break:break-word}
+.polaroid figcaption:empty{display:none}
+.polaroid .ph{margin-bottom:2px}
 .tape{position:absolute;top:-13px;left:50%;width:86px;height:26px;transform:translateX(-50%) rotate(-3deg);background:rgba(255,140,200,.5);box-shadow:0 1px 5px rgba(0,0,0,.25);border-left:2px dotted rgba(255,255,255,.4);border-right:2px dotted rgba(255,255,255,.4)}
 .polaroid:nth-child(even) .tape{transform:translateX(-50%) rotate(4deg);background:rgba(190,150,255,.5)}
 .p-tools{position:absolute;top:18px;right:18px;gap:6px;z-index:4;flex-wrap:wrap;justify-content:flex-end;max-width:70%;--eo-display:flex}
@@ -407,7 +402,7 @@ html,body{direction:rtl}
 #hero h1{font-family:var(--script);direction:ltr;letter-spacing:.02em}
 </style>
 </head>
-<body class="locked">
+<body class="locked gift">
 <noscript><p style="padding:40px;text-align:center;color:#fff">الحكاية دي محتاجة JavaScript عشان تفتح ❤️</p></noscript>
 
 <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
@@ -498,20 +493,11 @@ html,body{direction:rtl}
       <div class="orn"><svg viewBox="0 0 100 90"><path fill="currentColor" d="M50 88C20 66 0 46 0 26 0 10 12 0 26 0c10 0 19 6 24 14C55 6 64 0 74 0c14 0 26 10 26 26 0 20-20 40-50 62z"/></svg></div>
     </header>
 
-    <div class="dropzone edit-only" id="dropzone">
-      <p><b>ضيف صورنا هنا</b> — اسحب الصور هنا أو اختارها من جهازك.</p>
-      <p style="margin:14px 0 4px"><label class="btn" for="photoInput" style="cursor:pointer">＋ اختار صورنا</label></p>
-      <p style="font-size:.82rem;margin-top:8px">صورنا بتفضل محفوظة على المتصفح ده. استخدم <b>نسخة احتياطية</b> عشان تحتفظ بنسخة منها.</p>
-    </div>
-    <input type="file" id="photoInput" accept="image/*" multiple hidden>
-    <input type="file" id="replaceInput" accept="image/*" hidden>
-
     <button class="btn btn-glow show-btn" id="playShow" hidden>▶&nbsp; شغّل عرض صورنا</button>
     <div class="polaroids" id="grid"></div>
     <div class="empty glass reveal" id="empty" hidden>
       <span class="em-ic">📷</span>
-      <p class="edit-only" style="--eo-display:block">معرض صورنا مستني أول ذكرى ❤️<br>اضغط <b>اختار صورنا</b> وضيف الصور اللي بتحكي حكايتنا.</p>
-      <p class="view-only">صورنا مستنيانا هنا ✨</p>
+      <p>صورنا مستنيانا هنا ✨</p>
     </div>
   </section>
 
@@ -708,15 +694,10 @@ const DEFAULT_TIMELINE = [
   { icon: '🌙', date: 'كل يوم بيعدّي', title: 'كل مرة بحبك أكتر', text: 'كل يوم بيأكدلي إنك مش مجرد ذكرى حلوة، إنتي أجمل جزء في حاضري، والشخص اللي نفسي يكون في كل اللي جاي.' },
   { icon: '💖', date: '15 نوفمبر من كل سنة', title: 'ذكرى بداية عمر جديد', text: 'هفضل أفتكر اليوم اللي بدأت فيه حكايتنا، وأتمنى نحتفل بيه سنين طويلة، ونفضل نكتب سوا أجمل فصول قصتنا.' }
 ];
-const DEFAULT_CAPTIONS = [
-  'Our little forever', 'You, me, and all of this magic', 'My favorite place is next to you',
-  'A moment I would relive a thousand times', 'Home is wherever you are', 'Still falling for you',
-  'Us, always', 'Every day with you is a gift'
-];
 const ICONS = ['✨','💌','🌸','🌙','💖','🍓','🎶','☕','✈️','🎀','💍','🔥','🌹','🦋','⭐','🏡'];
 
 /* ==========================================================================
-   Persistence: localStorage for text/settings, IndexedDB for photos & music
+   Persistence: localStorage for text/settings, IndexedDB for music
    ========================================================================== */
 const LS = {
   get(k, d) { try { const v = localStorage.getItem('lovestory:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -727,7 +708,8 @@ const LS = {
 const state = {
   text: LS.get('text', {}),
   timeline: LS.get('timeline', null) || DEFAULT_TIMELINE.map(x => ({ ...x, id: uid() })),
-  settings: Object.assign({ anniv: '2024-11-15', editing: true, gift: false, volume: 0.6 }, LS.get('settings', {}), { anniv: '2024-11-15' })
+  // الزائر الجديد بيشوف الموقع من غير أدوات تعديل (editing:false, gift:true)
+  settings: Object.assign({ anniv: '2024-11-15', editing: false, gift: true, volume: 0.6 }, LS.get('settings', {}), { anniv: '2024-11-15' })
 };
 const saveText     = debounce(() => LS.set('text', state.text), 300);
 const saveTimeline = debounce(() => LS.set('timeline', state.timeline), 300);
@@ -1036,7 +1018,7 @@ function buildScene() {
    ========================================================================== */
 const PLAIN = (() => { const d = document.createElement('div'); try { d.contentEditable = 'plaintext-only'; return d.contentEditable === 'plaintext-only'; } catch (e) { return false; } })();
 const EDIT_VALUE = PLAIN ? 'plaintext-only' : 'true';
-const readText = n => n.innerText.replace(/ /g, ' ').replace(/\n+$/, '');
+const readText = n => n.innerText.replace(/\u00a0/g, ' ').replace(/\n+$/, '');
 
 function applyStoredText() {
   $$('[data-edit]').forEach(n => {
@@ -1083,7 +1065,7 @@ function setupEditing() {
   });
   twoStep($('#resetBtn'), '↺ Sure?', () => {
     state.text = {}; LS.del('text'); LS.del('timeline'); state.timeline = DEFAULT_TIMELINE.map(x => ({ ...x, id: uid() }));
-    state.settings.anniv = '2025-02-14'; saveSettings();
+    state.settings.anniv = '2024-11-15'; saveSettings();
     $$('[data-edit]').forEach(n => { const k = n.dataset.edit; if (DEF[k] != null) n.textContent = DEF[k]; });
     location.reload();
   });
@@ -1146,14 +1128,13 @@ function setupScrollFx() {
 }
 
 /* ==========================================================================
-   Dynamic editable bits (timeline + captions share the Dyn handler)
+   Dynamic editable bits (timeline)
    ========================================================================== */
 const Dyn = {
   input(n) {
     const host = n.closest('[data-id]'); if (!host) return;
     const f = n.dataset.dyn, v = readText(n);
     if (host.dataset.kind === 'tl') { const it = state.timeline.find(x => x.id === host.dataset.id); if (it) { it[f] = v; saveTimeline(); } }
-    else if (host.dataset.kind === 'photo') { const p = Gallery.items.find(x => x.id === host.dataset.id); if (p) { p.caption = v; Gallery.saveSoon(p); } }
   },
   make(tag, cls, field, text, ph, multi) {
     const n = el(tag, cls, text); n.dataset.dyn = field; if (ph) n.dataset.ph = ph; if (multi) n.setAttribute('data-multi', '');
@@ -1201,102 +1182,65 @@ $('#tlAdd').addEventListener('click', () => {
 });
 
 /* ==========================================================================
-   GALLERY — real uploads, stored in IndexedDB
+   GALLERY — صور ثابتة من فولدر الموقع (من غير رفع)
+   لتغيير الصور أو الترتيب أو التعليقات: عدّل المصفوفة PHOTOS بس.
+   كل سطر: ['اسم-الملف', 'تعليق اختياري']
    ========================================================================== */
-async function processImage(file, max = 1600) {
-  let bmp;
-  try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
-  catch (e) {
-    bmp = await new Promise((res, rej) => {
-      const u = URL.createObjectURL(file), im = new Image();
-      im.onload = () => { URL.revokeObjectURL(u); res(im); }; im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('decode')); }; im.src = u;
-    });
-  }
-  const bw = bmp.width || bmp.naturalWidth, bh = bmp.height || bmp.naturalHeight;
-  const sc = Math.min(1, max / Math.max(bw, bh)), w = Math.max(1, Math.round(bw * sc)), h = Math.max(1, Math.round(bh * sc));
-  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
-  const c = cv.getContext('2d'); c.fillStyle = '#1a0630'; c.fillRect(0, 0, w, h); c.drawImage(bmp, 0, 0, w, h);
-  const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', .88));
-  if (bmp.close) bmp.close();
-  if (!blob) throw new Error('encode');
-  return { blob, w, h };
-}
+const PHOTO_FOLDERS = ['photos/', ''];   // بيجرّب فولدر photos الأول، ولو ملقاش الصورة بيجرّب جنب index.html
+const PHOTOS = [
+  ['IMG_0058.jpeg', ''],
+  ['IMG_0059.jpeg', ''],
+  ['IMG_0060.jpeg', ''],
+  ['IMG_0067.jpeg', ''],
+  ['IMG_0068.jpeg', ''],
+  ['IMG_0069.jpeg', ''],
+  ['IMG_0084.jpeg', ''],
+  ['IMG_0087.jpeg', ''],
+  ['IMG_0088.jpeg', ''],
+  ['IMG_0096.jpeg', ''],
+  ['IMG_0097.jpeg', ''],
+  ['IMG_0098.jpeg', ''],
+  ['IMG_0099.jpeg', ''],
+  ['IMG_0104.jpeg', ''],
+  ['IMG_0105.jpeg', ''],
+  ['IMG_0106.jpeg', ''],
+  ['IMG_0108.jpeg', ''],
+  ['IMG_9181.jpeg', '']
+];
+
 const tiltOf = id => { let h = 0; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0; return (((h % 640) / 100) - 3.2).toFixed(2); };
 
 const Gallery = {
-  items: [], replacing: null, saveTimers: {},
-  async load() {
-    const recs = await DB.all('photos').catch(() => []);
-    recs.sort((a, b) => a.order - b.order);
-    this.items = recs.map(r => ({ ...r, url: URL.createObjectURL(r.blob) }));
+  items: [],
+  load() {
+    this.items = PHOTOS.map(([file, caption], i) => ({
+      id: 'p' + i, file, caption, order: i, fi: 0, url: PHOTO_FOLDERS[0] + encodeURIComponent(file)
+    }));
     this.render();
-  },
-  record(p) { return { id: p.id, blob: p.blob, caption: p.caption, order: p.order, w: p.w, h: p.h }; },
-  saveSoon(p) { clearTimeout(this.saveTimers[p.id]); this.saveTimers[p.id] = setTimeout(() => DB.put('photos', this.record(p)).catch(() => {}), 450); },
-  async add(files) {
-    files = [...files].filter(f => f.type.startsWith('image/') || /\.(heic|heif|jpe?g|png|webp|gif|avif)$/i.test(f.name));
-    if (!files.length) { toast('من فضلك اختار صور بصيغة JPG أو PNG أو HEIC…'); return; }
-    toast(`بنضيف ${files.length} صورة لذكرياتنا…`, 5000);
-    let ok = 0, bad = 0, order = this.items.length ? Math.max(...this.items.map(i => i.order)) + 1 : 0;
-    for (const f of files) {
-      try {
-        const { blob, w, h } = await processImage(f);
-        const p = { id: uid(), blob, w, h, order: order++, caption: DEFAULT_CAPTIONS[(this.items.length) % DEFAULT_CAPTIONS.length], url: URL.createObjectURL(blob) };
-        await DB.put('photos', this.record(p)); this.items.push(p); ok++;
-      } catch (e) { bad++; }
-    }
-    this.render();
-    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
-    toast(ok ? `Added ${ok} photo${ok > 1 ? 's' : ''} 💕${bad ? ` (${bad} couldn't be read)` : ''}` : "Those files couldn't be read as pictures");
-  },
-  async replace(id, file) {
-    const p = this.items.find(x => x.id === id); if (!p || !file) return;
-    try {
-      const { blob, w, h } = await processImage(file);
-      URL.revokeObjectURL(p.url); Object.assign(p, { blob, w, h, url: URL.createObjectURL(blob) });
-      await DB.put('photos', this.record(p)); this.render(); toast('تم تغيير الصورة ✨');
-    } catch (e) { toast("مش قادر أفتح الصورة دي"); }
-  },
-  async remove(id) {
-    const i = this.items.findIndex(x => x.id === id); if (i < 0) return;
-    URL.revokeObjectURL(this.items[i].url); this.items.splice(i, 1);
-    await DB.del('photos', id).catch(() => {}); this.render(); toast('تم حذف الصورة');
-  },
-  async move(id, d) {
-    const i = this.items.findIndex(x => x.id === id), j = i + d; if (i < 0 || j < 0 || j >= this.items.length) return;
-    const a = this.items[i], b = this.items[j]; [a.order, b.order] = [b.order, a.order];
-    this.items.sort((x, y) => x.order - y.order);
-    await Promise.all([DB.put('photos', this.record(a)), DB.put('photos', this.record(b))]).catch(() => {}); this.render();
   },
   render() {
     const grid = $('#grid'); grid.innerHTML = '';
-    $('#empty').hidden = this.items.length > 0; $('#playShow').hidden = this.items.length < 1;
+    $('#empty').hidden = this.items.length > 0;
+    $('#playShow').hidden = this.items.length < 1;
     this.items.forEach((p, i) => {
       const fig = el('figure', 'polaroid reveal'); fig.dataset.id = p.id; fig.dataset.kind = 'photo';
       fig.style.setProperty('--r', tiltOf(p.id) + 'deg'); fig.style.setProperty('--d', (i % 6) * 70 + 'ms');
-      fig.style.setProperty('--ar', clamp(p.w / p.h, .8, 1.25).toFixed(3));
-      const ph = el('div', 'ph'), img = new Image(); img.src = p.url; img.alt = p.caption || 'Our photo'; img.decoding = 'async'; ph.append(img);
-      const cap = Dyn.make('figcaption', '', 'caption', p.caption, 'Write a caption…');
-      const tools = el('div', 'p-tools edit-only');
-      const b = (label, title, fn) => { const x = el('button', 'tbtn', label); x.title = title; x.setAttribute('aria-label', title); x.addEventListener('click', e => { e.stopPropagation(); fn(); }); return x; };
-      const del = b('🗑', 'Delete photo', () => {});
-      tools.append(b('◀', 'Move earlier', () => this.move(p.id, -1)), b('▶', 'Move later', () => this.move(p.id, 1)),
-        b('⇄', 'Replace photo', () => { this.replacing = p.id; $('#replaceInput').click(); }), del);
-      twoStep(del, 'Delete?', () => this.remove(p.id));
-      fig.append(el('div', 'tape'), tools, ph, cap);
-      fig.addEventListener('click', e => { if (e.target.closest('.p-tools,figcaption')) return; Viewer.open(i); });
+      const ph = el('div', 'ph'), img = new Image();
+      img.alt = p.caption || 'صورتنا'; img.decoding = 'async';
+      img.onload = () => fig.style.setProperty('--ar', clamp(img.naturalWidth / img.naturalHeight, .8, 1.25).toFixed(3));
+      img.onerror = () => { // جرّب المسار التاني لو الأول فشل
+        if (p.fi + 1 < PHOTO_FOLDERS.length) { p.fi++; p.url = PHOTO_FOLDERS[p.fi] + encodeURIComponent(p.file); img.src = p.url; }
+        else { ph.textContent = '⚠ ' + p.file; ph.style.cssText = 'color:#fff;font:12px sans-serif;padding:10px;display:grid;place-items:center;text-align:center;word-break:break-all'; }
+      };
+      img.src = p.url; ph.append(img);
+      fig.append(el('div', 'tape'), ph, el('figcaption', '', p.caption));
+      fig.addEventListener('click', () => Viewer.open(i));
       grid.append(fig);
     });
     Reveal.scan(grid);
   }
 };
 function setupGalleryInputs() {
-  $('#photoInput').addEventListener('change', e => { const f = e.target.files; if (f && f.length) Gallery.add(f); e.target.value = ''; });
-  $('#replaceInput').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f && Gallery.replacing) Gallery.replace(Gallery.replacing, f); });
-  const dz = $('#dropzone');
-  ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('over'); }));
-  ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('over'); }));
-  dz.addEventListener('drop', e => { if (e.dataTransfer && e.dataTransfer.files.length) Gallery.add(e.dataTransfer.files); });
   $('#playShow').addEventListener('click', () => Viewer.open(0, true));
 }
 
@@ -1650,7 +1594,7 @@ const Surprise = (() => {
 })();
 
 /* ==========================================================================
-   Backup / restore (photos, music, text, timeline, date — one .json file)
+   Backup / restore (music, text, timeline, date — one .json file)
    ========================================================================== */
 const blobToDataURL = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); });
 function dataURLToBlob(u) {
@@ -1660,9 +1604,8 @@ function dataURLToBlob(u) {
 async function exportBackup() {
   try {
     toast('بنجهّز نسخة من حكايتنا…', 6000);
-    const photos = await DB.all('photos'), files = await DB.all('files'), m = files.find(f => f.key === 'music');
+    const files = await DB.all('files'), m = files.find(f => f.key === 'music');
     const out = { app: 'our-love-story', v: 1, text: state.text, timeline: state.timeline, anniv: state.settings.anniv, photos: [], music: null };
-    for (const p of photos.sort((a, b) => a.order - b.order)) out.photos.push({ id: p.id, caption: p.caption, order: p.order, w: p.w, h: p.h, data: await blobToDataURL(p.blob) });
     if (m) out.music = { name: m.name, data: await blobToDataURL(m.blob) };
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(out)], { type: 'application/json' }));
     a.download = 'our-love-story-backup.json'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
@@ -1673,8 +1616,7 @@ async function importBackup(file) {
   try {
     const d = JSON.parse(await file.text()); if (d.app !== 'our-love-story') throw new Error('bad');
     toast('بنسترجع الذكريات…', 8000);
-    await DB.clear('photos'); await DB.clear('files');
-    for (const p of d.photos || []) await DB.put('photos', { id: p.id, caption: p.caption, order: p.order, w: p.w, h: p.h, blob: dataURLToBlob(p.data) });
+    await DB.clear('files');
     if (d.music) await DB.put('files', { key: 'music', name: d.music.name, blob: dataURLToBlob(d.music.data) });
     LS.set('text', d.text || {}); if (d.timeline) LS.set('timeline', d.timeline);
     state.settings.anniv = d.anniv || state.settings.anniv; saveSettings();
@@ -1720,11 +1662,9 @@ addEventListener('keydown', e => {
   Surprise.init();
   Finale.init();
   Countdown.init();
+  Gallery.load();            // الصور ثابتة، مش محتاجة تخزين
   await DB.open();
-  if (!DB.persistent) setTimeout(() => toast('المتصفح مانع حفظ الصور. جرّب تفتح الموقع على Chrome أو Safari، وتأكد إنك مش فاتحه في وضع التصفح الخفي.', 9000), 1500);
-  await Gallery.load();
   await Music.init();
-  window.__love = { Gallery, Viewer, state, Music, Surprise, Paper }; // handy for testing
 })();
 })();
 </script>
